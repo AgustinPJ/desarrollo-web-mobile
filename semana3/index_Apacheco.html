@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semana 3 - Catálogo de Biblioteca</title>
+</head>
+<body class="bg-light p-4" onload="cargarLibros();">
+
+    <div class="container" style="max-width: 320px;">
+        <div class="card p-4 shadow-sm border-0">
+            <h4 class="mb-3 text-center text-primary fw-bold"> Registro de Biblioteca</h4>
+
+            
+            <div class="mb-2">
+                <label for="txtId" class="form-label text-secondary small">Código / ID:</label>
+                <input id="txtId" type="text" class="form-control" placeholder="Ej: 103">
+            </div>
+
+            <div class="mb-3">
+                <label for="txtTitulo" class="form-label text-secondary small">Título del Libro:</label>
+                <input id="txtTitulo" type="text" class="form-control" placeholder="Ej: El Principito">
+            </div>
+
+        
+            <button type="button" class="btn btn-primary w-100 mb-4" onclick="agregarLibro();">
+                
+            </button>
+
+           
+            <div>
+                <label for="cmbLibro" class="form-label text-secondary small">Libros registrados en el sistema:</label>
+                <select id="cmbLibro" name="cmbLibro" class="form-select"></select>
+            </div>
+        </div>
+    </div>
+
+    <script src="libros_Apacheco.js"></script>
+</body>
+</html>
