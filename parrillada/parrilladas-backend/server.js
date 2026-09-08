@@ -73,3 +73,19 @@ const resolvers = {
     }
 }
 
+let Apolloserver = null;
+const corsOptions = {
+    origin: 'http://localhost:8090',
+    credentials: false,
+};
+
+async function startServer() {
+    apolloserver = new ApolloServer({ typeDefs, resolvers, corsOptions });
+    await apolloserver.start();
+    await apolloserver.applyMiddleware({ app, corse: false});
+}
+
+const app = express();
+app.listen(8090, function(){
+    console.log("GraphQL iniciado");
+});
