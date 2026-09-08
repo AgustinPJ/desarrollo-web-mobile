@@ -78,12 +78,13 @@ const corsOptions = {
     origin: 'http://localhost:8090',
     credentials: false,
 };
-
 async function startServer() {
     apolloserver = new ApolloServer({ typeDefs, resolvers, corsOptions });
     await apolloserver.start();
-    await apolloserver.applyMiddleware({ app, corse: false});
+    apolloserver.applyMiddleware({ app, cors: false});
 }
+
+startServer();
 
 const app = express();
 app.listen(8090, function(){
