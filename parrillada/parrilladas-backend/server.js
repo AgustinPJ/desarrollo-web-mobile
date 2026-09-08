@@ -13,7 +13,7 @@ const typeDefs = gql`
         nombre: String!
         estilo: String!
         descripcion: String!
-        precio: Number!
+        precio: Int!
     }
 
     input ProductoInput {
@@ -63,30 +63,30 @@ const resolvers = {
             return producto;
         },
         async updateProducto(obj,{id,input}){
-            const Producto = await Producto.findByIdAndUpdate(id,input);
-            return Producto;
+            const producto = await Producto.findByIdAndUpdate(id,input);
+            return producto;
         },
         async delProducto(obj,{id}){
             await Producto.deleteOne({_id: id});
-            return "producto eliminado";
+            return {message: "Producto eliminado"};
         }
     }
 }
 
-let Apolloserver = null;
+let apolloserver = null;
 const corsOptions = {
     origin: 'http://localhost:8090',
-    credentials: false,
+    credentials: false
 };
 async function startServer() {
     apolloserver = new ApolloServer({ typeDefs, resolvers, corsOptions });
     await apolloserver.start();
     apolloserver.applyMiddleware({ app, cors: false});
 }
-
 startServer();
-
 const app = express();
+app.use(cors());
 app.listen(8090, function(){
     console.log("GraphQL iniciado");
 });
+
