@@ -107,4 +107,3 @@ async def eliminar_item(item_id: str):
     if res.deleted_count == 0:
         raise HTTPException(404, "Item no encontrado")
     return None
-
