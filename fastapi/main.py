@@ -54,7 +54,7 @@ def health():
 @app.get("/items", response_model=List[ProductoOut])
 async def listar_items(
         activo=doc.get("activo", True)
-    )
+    ):
 
 # EndPoints
 @app.get("/health", tags=["sistema"])
