@@ -53,16 +53,6 @@ def health():
 
 @app.get("/items", response_model=List[ProductoOut])
 async def listar_items(
-        activo=doc.get("activo", True)
-    ):
-
-# EndPoints
-@app.get("/health", tags=["sistema"])
-def health():
-    return {"status":"ok"}
-
-@app.get("/items", response_model=List[ProductoOut])
-async def listar_items(
     q: Optional[str] = Query(None, description="Filtro por nombre que contenga q"),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
