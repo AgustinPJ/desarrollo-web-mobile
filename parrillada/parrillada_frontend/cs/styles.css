@@ -1,0 +1,71 @@
+/* Paleta del boceto */
+:root {
+    --color-fondo: #121417;
+    --color-titulos: #F51B19;
+    --color-botones: #FFAB18;
+    --color-parrilla: #A12B0D;
+    --color-tarjetas: #590D97;
+    --color-texto-suave: #f0f2f5;
+}
+
+body {
+    background-color: var(--color-fondo) !important;
+    color: var(--color-texto-suave);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Navbar */
+.navbar-custom {
+    background-color: rgba(18, 20, 23, 0.95);
+    border-bottom: 2px solid var(--color-parrilla);
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--color-titulos) !important;
+    font-weight: 800;
+}
+
+.navbar-custom .nav-link {
+    color: var(--color-texto-suave) !important;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--color-botones) !important;
+}
+
+/* Títulos y Botones */
+h1, h2, h3 {
+    color: var(--color-titulos);
+}
+
+.btn-destacado {
+    background-color: var(--color-botones);
+    color: #000;
+    font-weight: 700;
+    border: none;
+}
+
+.btn-destacado:hover {
+    background-color: #e09612;
+    color: #000;
+}
+
+/* Tarjeta de apoyo púrpura del boceto */
+.card-apoyo {
+    background-color: var(--color-tarjetas);
+    border: 1px solid rgba(255, 171, 24, 0.3);
+    border-radius: 12px;
+}
+/* Tarjetas de estilo de parrilla con borde rojo teja */
+.card-parrilla {
+    background-color: #1a1d22;
+    border: none;
+    border-left: 5px solid var(--color-parrilla);
+    border-radius: 8px;
+    color: var(--color-texto-suave);
+}
+
+.card-parrilla h4 {
+    color: var(--color-botones);
+    font-weight: 700;
+}

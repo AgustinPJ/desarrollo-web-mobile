@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Tienda del Fuego - Cortes y Parrilladas</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos Propios con la paleta del boceto -->
+    <link rel="stylesheet" href="cs/styles.css">
+</head>
+<body>
+
+    <!--  NAVBAR TIENDA -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <!-- Mobile: logo arriba -->
+            <a class="navbar-brand d-lg-none" href="#inicio">🔥 TIENDA PARRILLERA</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menuPrincipal">
+                <div class="d-flex flex-column flex-lg-row align-items-center justify-content-between w-100 py-2 py-lg-0">
+                    
+                    <ul class="navbar-nav d-flex align-items-center mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="btn btn-destacado px-3 me-lg-3 my-1 my-lg-0" href="#pedidos">Hacer Pedido</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#catalogo">Catálogo</a>
+                        </li>
+                    </ul>
+
+                    <a class="navbar-brand mx-auto d-none d-lg-block fw-bold" href="#inicio" style="font-size: 1.4rem;">
+                        🔥 LA TIENDA DEL FUEGO
+                    </a>
+
+                    <ul class="navbar-nav d-flex align-items-center mb-2 mb-lg-0">
+                        <li class="nav-item me-lg-2">
+                            <a class="nav-link" href="#nosotros">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#estilos">Estilos de Parrilla</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#faq">FAQ</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO / PROMOCIÓN DE LA TIENDA -->
+    <header id="inicio" class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center g-4">
+                
+                <div class="col-12 col-lg-7">
+                    <span class="badge mb-2 px-3 py-2" style="background-color: var(--color-parrilla); font-size: 0.85rem;">
+                        Despacho directo a tu quincho
+                    </span>
+                    <h1 class="display-4 fw-bold mb-3">Parrilladas y Cortes Premium Listos para Asar</h1>
+                    <p class="lead text-secondary mb-4">
+                        Packs de asado y carnes ahumadas al vacío, madurados artesanalmente y seleccionados para que seas el maestro parrillero de tu casa.
+                    </p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#pedidos" class="btn btn-destacado btn-lg px-4">Comprar Pack</a>
+                        <a href="#catalogo" class="btn btn-outline-light btn-lg px-4">Ver Catálogo</a>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-5 text-center">
+                    <div class="p-3 card-apoyo shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop" 
+                             alt="Pack de carne parrillera" class="img-fluid rounded-3 shadow">
+                        <p class="mt-2 mb-0 small text-light">Promoción: Pack Familiar con 20% de descuento</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!--SECCIÓN: ESTILOS DE PARRILLA  -->
+    <section id="estilos" class="py-5" style="background-color: #16191e;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="titulo-destacado">Nuestras Líneas de Productos</h2>
+                <p class="text-secondary">Selección de cortes y preparaciones listas para tu parrilla</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card card-parrilla p-4 h-100 shadow">
+                        <h4>Línea Parrilla Directa</h4>
+                        <p class="text-secondary">Cortes crudos envasados al vacío con sellado térmico: Asado de tira, entrañas y lomos angus listos para las brasas.</p>
+                        <span class="small fw-bold" style="color: var(--color-botones);">Formato: Sellado al vacío x kg</span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card card-parrilla p-4 h-100 shadow">
+                        <h4>Línea Smoked & Ready</h4>
+                        <p class="text-secondary">Cortes ya ahumados con leña de roble durante 12 horas. Vienen listos para solo regenerar en tu parrilla en 15 minutos.</p>
+                        <span class="small fw-bold" style="color: var(--color-botones);">Formato: Brisket y Costillares BBQ</span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-12 col-lg-4">
+                    <div class="card card-parrilla p-4 h-100 shadow">
+                        <h4>Packs y Cajas Parrilleras</h4>
+                        <p class="text-secondary">Combos familiares surtidos que incluyen carnes, longanizas artesanales, carbón premium y sales parrilleras.</p>
+                        <span class="small fw-bold" style="color: var(--color-botones);">Formato: Cajas para 4, 8 o 12 personas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATÁLOGO DINÁMICO (Conectado a JavaScript del DOM) -->
+    <section id="catalogo" class="py-5">
+        <div class="container">
+            <div class="row align-items-center g-5 mb-5">
+                
+                <div class="col-12 col-lg-6">
+                    <div class="p-3 card-apoyo shadow-lg text-center">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=700&auto=format&fit=crop" 
+                             alt="Despacho de carnes premium" class="img-fluid rounded-3 shadow">
+                        <p class="mt-3 mb-0 fw-semibold text-light">Envíos refrigerados en cadena de frío</p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6" id="nosotros">
+                    <span class="badge mb-2 px-3 py-2" style="background-color: var(--color-parrilla);">
+                        Calidad de Origen
+                    </span>
+                    <h2 class="display-6 fw-bold mb-3">La mejor carnicería y ahumaduría en la puerta de tu casa</h2>
+                    <p class="text-secondary lead">
+                        Nuestra tienda nació para resolver el problema de conseguir cortes nobles y preparaciones de ahumado largo sin tener que pasar 14 horas junto al fuego.
+                    </p>
+                    <p class="text-secondary">
+                        Controlamos el estándar desde el desposte y envasado hasta la entrega puntual en tu domicilio para tus celebraciones.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tabla de productos del catálogo -->
+            <div class="p-4 rounded-3" style="background-color: #1a1d22; border: 1px solid rgba(255, 171, 24, 0.2);">
+                <div class="mb-4">
+                    <h3 class="h4 mb-1" style="color: var(--color-botones);">Productos Destacados en Stock</h3>
+                    <p class="text-secondary small mb-0">Cortes frescos y ahumados listos para despacho inmediato:</p>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover align-middle mb-0">
+                        <thead style="background-color: var(--color-parrilla);">
+                            <tr>
+                                <th class="ps-3">Código</th>
+                                <th>Corte / Pack</th>
+                                <th>Línea</th>
+                                <th>Precio Unitario</th>
+                                <th class="text-center">Stock</th>
+                                <th class="text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaProductos">
+                            <!-- Inyectado dinámicamente app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!--BANNER PROMOCIONAL -->
+    <section class="container my-5">
+        <div class="p-5 text-center text-white rounded-3 shadow-lg" 
+             style="background: linear-gradient(135deg, var(--color-parrilla), var(--color-tarjetas));">
+            <h2 class="display-6 fw-bold mb-2">¡20% OFF en Packs Parrilleros Familiares!</h2>
+            <p class="fs-5 mb-4">Pide de lunes a miércoles con el cupón <strong>ENVIOBRASA</strong> y recibe despacho gratuito.</p>
+            <a href="#pedidos" class="btn btn-destacado btn-lg px-4 shadow">Comprar Pack Ahora</a>
+        </div>
+    </section>
+
+    <!--PREGUNTAS FRECUENTES  -->
+    <section id="faq" class="py-5" style="background-color: #16191e;">
+        <div class="container" style="max-width: 800px;">
+            <div class="text-center mb-4">
+                <h2 class="titulo-destacado">Preguntas Frecuentes (FAQ)</h2>
+                <p class="text-secondary">Todo lo que necesitas saber sobre el despacho y empaque</p>
+            </div>
+
+            <div class="accordion" id="acordeonFAQ">
+                <div class="accordion-item bg-dark border-secondary text-light">
+                    <h2 class="accordion-header" id="faq1">
+                        <button class="accordion-button collapsed bg-dark text-light" type="button" data-bs-toggle="collapse" data-bs-target="#resp1">
+                            ¿Cómo vienen envasados los productos?
+                        </button>
+                    </h2>
+                    <div id="resp1" class="accordion-collapse collapse" data-bs-parent="#acordeonFAQ">
+                        <div class="accordion-body text-secondary">
+                            Todos los cortes vienen sellados al vacío con tecnología termoencogible y se despachan en cajas térmicas con hielo en gel para resguardar la cadena de frío.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-dark border-secondary text-light">
+                    <h2 class="accordion-header" id="faq2">
+                        <button class="accordion-button collapsed bg-dark text-light" type="button" data-bs-toggle="collapse" data-bs-target="#resp2">
+                            ¿Cuánto tardan los envíos a domicilio?
+                        </button>
+                    </h2>
+                    <div id="resp2" class="accordion-collapse collapse" data-bs-parent="#acordeonFAQ">
+                        <div class="accordion-body text-secondary">
+                            Si realizas tu pedido antes de las 13:00 hrs, despachamos al día siguiente o en la fecha programada que selecciones en el formulario.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--FORMULARIO DE COMPRA / PEDIDO DE PARRILLADA -->
+    <section id="pedidos" class="py-5">
+        <div class="container" style="max-width: 720px;">
+            
+            <div class="card card-apoyo p-4 p-md-5 shadow-lg mb-4">
+                <h3 class="text-center mb-4" style="color: var(--color-botones);">Solicitar Pedido a Domicilio</h3>
+                
+                <form id="formularioPedido">
+                    <div class="mb-3">
+                        <label for="txtNombre" class="form-label text-light">Nombre del Cliente (*):</label>
+                        <input type="text" id="txtNombre" class="form-control" placeholder="Ej: Carlos Silva">
+                        <small id="errorNombre" class="text-warning d-none">El nombre es obligatorio (mínimo 3 letras).</small>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="txtCorreo" class="form-label text-light">Correo de Contacto (*):</label>
+                            <input type="email" id="txtCorreo" class="form-control" placeholder="carlos@correo.cl">
+                            <small id="errorCorreo" class="text-warning d-none">Ingresa un correo con formato válido.</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="txtDireccion" class="form-label text-light">Dirección de Despacho (*):</label>
+                            <input type="text" id="txtDireccion" class="form-control" placeholder="Ej: Av. Las Parcelas 1234">
+                            <small id="errorDireccion" class="text-warning d-none">La dirección es obligatoria.</small>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6">
+                            <label for="cmbPack" class="form-label text-light">Producto a Pedir (*):</label>
+                            
+                            <select id="cmbPack" class="form-select">
+                                <option value="">-- Elige un corte o selecciónalo en la tabla --</option>
+                            </select>       
+                            <small id="errorPack" class="text-warning d-none">Debes seleccionar un producto.</small>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="txtFecha" class="form-label text-light">Fecha de Entrega (*):</label>
+                            <input type="date" id="txtFecha" class="form-control">
+                            <small id="errorFecha" class="text-warning d-none">Indica una fecha válida.</small>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-destacado w-100 py-2 fw-bold" onclick="validarYProcesarPedido();">
+                        Confirmar y Enviar Solicitud de Pedido
+                    </button>
+                </form>
+            </div>
+
+            <!-- Panel de Confirmación / Comprobante -->
+            <div id="panelConfirmacion" class="card p-4 shadow-lg border-success d-none" style="background-color: #1a1d22;">
+                <div class="card-body text-center">
+                    <h4 class="text-success fw-bold mb-3">¡Orden de Compra Generada con Éxito!</h4>
+                    <p class="text-light mb-1">Resumen del comprobante de despacho:</p>
+                    
+                    <ul class="list-group list-group-flush text-start my-3 bg-dark">
+                        <li class="list-group-item bg-dark text-light" id="detCliente"></li>
+                        <li class="list-group-item bg-dark text-light" id="detCorreo"></li>
+                        <li class="list-group-item bg-dark text-light" id="detDireccion"></li>
+                        <li class="list-group-item bg-dark text-light" id="detProducto"></li>
+                        <li class="list-group-item bg-dark text-light" id="detFecha"></li>
+                    </ul>
+
+                    <div class="alert alert-info py-2 small mb-0">
+                        Te hemos enviado los datos de transferencia y confirmación por correo.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-4 text-center border-top" style="background-color: #0d0f12; border-color: var(--color-parrilla) !important;">
+        <div class="container">
+            <p class="mb-1 fw-bold" style="color: var(--color-botones);">🔥 La Tienda del Fuego - Cortes y Parrilladas</p>
+            <p class="small text-secondary mb-0">PTEC103: Desarrollo Web y Móvil - Taller 1 Frontend (HTML5, CSS y JS)</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
