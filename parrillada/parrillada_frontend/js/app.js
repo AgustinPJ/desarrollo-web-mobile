@@ -1,125 +1,316 @@
-//Catálogo unificado de productos 
-const tiendaAPI = {
-    "status": 200,
-    "mensaje": "Productos disponibles obtenidos",
-    "productos": [
-        { "id": "PARR-01", "nombre": "Asado de Tira Angus (1kg)", "linea": "Parrilla Directa", "precio": 14990 },
-        { "id": "PARR-02", "nombre": "Entraña Fina Seleccionada (1kg)", "linea": "Parrilla Directa", "precio": 17500 },
-        { "id": "SMOK-01", "nombre": "Brisket Ahumado al Vacío (1.5kg)", "linea": "Smoked & Ready", "precio": 28500 },
-        { "id": "SMOK-02", "nombre": "Costillar BBQ Maple Ahumado", "linea": "Smoked & Ready", "precio": 19990 },
-        { "id": "PACK-01", "nombre": "Pack Familiar Parrillero (4 personas)", "linea": "Cajas Parrilleras", "precio": 34990 }
-    ]
+/* =========================================================
+   La Tienda del Fuego — lógica de la interfaz
+   Catálogo generado con la API del DOM a partir del servicio
+   (js/api.js), filtros por línea, selección de producto y
+   envío del pedido con estados de carga, éxito y error.
+   ========================================================= */
+
+const estado = {
+    productos: [],
+    filtro: "Todos"
 };
 
-//Carga inicial del DOM
+const formatoCLP = new Intl.NumberFormat("es-CL", { style: "currency", currency: "CLP", maximumFractionDigits: 0 });
+
+const $ = (selector, raiz = document) => raiz.querySelector(selector);
+
+/* Crea un elemento con clases, atributos y texto sin usar innerHTML,
+   así ningún dato que venga del servicio se interpreta como HTML. */
+function crear(etiqueta, { clase, texto, attrs } = {}, hijos = []) {
+    const nodo = document.createElement(etiqueta);
+    if (clase) nodo.className = clase;
+    if (texto !== undefined) nodo.textContent = texto;
+    if (attrs) Object.entries(attrs).forEach(([clave, valor]) => nodo.setAttribute(clave, valor));
+    hijos.forEach((hijo) => nodo.append(hijo));
+    return nodo;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    inicializarTienda();
+    configurarFecha();
+    registrarEventos();
+    cargarCatalogo();
 });
 
-function inicializarTienda() {
-    const tabla = document.getElementById("tablaProductos");
-    const selectorFormulario = document.getElementById("cmbPack");
+/* ---------- Catálogo ---------- */
 
-    tiendaAPI.productos.forEach((prod) => {
-        // A. Poblamos la tabla de la tienda
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-            <td class="ps-3 fw-bold text-secondary">${prod.id}</td>
-            <td class="fw-bold" style="color: var(--color-botones);">${prod.nombre}</td>
-            <td><span class="badge bg-secondary">${prod.linea}</span></td>
-            <td>$${prod.precio.toLocaleString('es-CL')}</td>
-            <td class="text-center"><span class="badge bg-success">En Stock</span></td>
-            <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-warning" onclick="seleccionarParaComprar('${prod.id}');">
-                    Pedir
-                </button>
-            </td>
-        `;
-        tabla.appendChild(fila);
+async function cargarCatalogo() {
+    mostrarCargando();
+    try {
+        estado.productos = await api.obtenerProductos();
+        pintarFiltros();
+        pintarProductos();
+        poblarSelector();
+    } catch (error) {
+        mostrarError(error.message);
+    }
+}
 
-        // Poblamos el selector del formulario
-        const opcion = document.createElement("option");
-        opcion.setAttribute("value", `${prod.nombre} ($${prod.precio.toLocaleString('es-CL')})`);
-        opcion.innerText = `${prod.nombre} - $${prod.precio.toLocaleString('es-CL')}`;
-        selectorFormulario.appendChild(opcion);
+function mostrarCargando() {
+    const grid = $("#gridProductos");
+    grid.replaceChildren();
+    for (let i = 0; i < 4; i++) {
+        grid.append(crear("div", { clase: "col-12 col-sm-6 col-lg-4 col-xl-3" }, [
+            crear("div", { clase: "esqueleto", attrs: { "aria-hidden": "true" } })
+        ]));
+    }
+    grid.setAttribute("aria-busy", "true");
+}
+
+function mostrarError(mensaje) {
+    const grid = $("#gridProductos");
+    const reintentar = crear("button", { clase: "btn-fuego mt-3", texto: "Reintentar", attrs: { type: "button" } });
+    reintentar.addEventListener("click", cargarCatalogo);
+
+    grid.replaceChildren(crear("div", { clase: "col-12" }, [
+        crear("div", { clase: "estado-catalogo error", attrs: { role: "alert" } }, [
+            crear("h3", { texto: "No pudimos cargar el catálogo" }),
+            crear("p", { clase: "mb-0", texto: mensaje }),
+            reintentar
+        ])
+    ]));
+    grid.removeAttribute("aria-busy");
+}
+
+function pintarFiltros() {
+    const lineas = ["Todos", ...new Set(estado.productos.map((p) => p.linea))];
+    const contenedor = $("#filtros");
+    contenedor.replaceChildren(...lineas.map((linea) => crear("button", {
+        clase: `filtro${linea === estado.filtro ? " activo" : ""}`,
+        texto: linea,
+        attrs: { type: "button", "data-linea": linea, "aria-pressed": String(linea === estado.filtro) }
+    })));
+}
+
+function pintarProductos() {
+    const grid = $("#gridProductos");
+    const visibles = estado.filtro === "Todos"
+        ? estado.productos
+        : estado.productos.filter((p) => p.linea === estado.filtro);
+
+    grid.removeAttribute("aria-busy");
+
+    if (visibles.length === 0) {
+        grid.replaceChildren(crear("div", { clase: "col-12" }, [
+            crear("div", { clase: "estado-catalogo" }, [
+                crear("h3", { texto: "Sin productos en esta línea" }),
+                crear("p", { clase: "mb-0", texto: "Prueba con otra categoría o vuelve pronto." })
+            ])
+        ]));
+        return;
+    }
+
+    grid.replaceChildren(...visibles.map(crearTarjeta));
+}
+
+function crearTarjeta(producto) {
+    const boton = crear("button", {
+        clase: "btn-fuego",
+        texto: producto.disponible ? "Agregar" : "Agotado",
+        attrs: { type: "button", "data-producto": producto.id, "aria-label": `Pedir ${producto.nombre}` }
     });
+    boton.disabled = !producto.disponible;
+
+    const tarjeta = crear("article", { clase: `tarjeta-producto${producto.disponible ? "" : " agotado"}` }, [
+        crear("div", { clase: "producto-cabecera", attrs: { "data-linea": producto.linea } }, [
+            crear("span", { clase: "chip chip-linea", texto: producto.linea }),
+            crear("span", { clase: "codigo", texto: producto.id, attrs: { "aria-hidden": "true" } })
+        ]),
+        crear("div", { clase: "producto-cuerpo" }, [
+            crear("span", {
+                clase: `chip ${producto.disponible ? "chip-stock" : "chip-agotado"} align-self-start`,
+                texto: producto.disponible ? "En stock" : "Sin stock"
+            }),
+            crear("h3", { texto: producto.nombre }),
+            crear("p", { texto: producto.descripcion })
+        ]),
+        crear("div", { clase: "producto-pie" }, [
+            crear("div", { clase: "precio", texto: formatoCLP.format(producto.precio) }, [
+                crear("small", { texto: producto.formato })
+            ]),
+            boton
+        ])
+    ]);
+
+    return crear("div", { clase: "col-12 col-sm-6 col-lg-4 col-xl-3" }, [tarjeta]);
 }
 
-//Función interactiva: al presionar "Pedir" en la tabla, salta al formulario y lo selecciona
-function seleccionarParaComprar(idProducto) {
-    const productoEncontrado = tiendaAPI.productos.find(p => p.id === idProducto);
-    if (productoEncontrado) {
-        const selectorFormulario = document.getElementById("cmbPack");
-        selectorFormulario.value = `${productoEncontrado.nombre} ($${productoEncontrado.precio.toLocaleString('es-CL')})`;
-        
-        // Desplazamiento suave al formulario de compra
-        document.getElementById("pedidos").scrollIntoView({ behavior: 'smooth' });
+function poblarSelector() {
+    const selector = $("#cmbProducto");
+    const opciones = estado.productos.map((p) => {
+        const opcion = crear("option", {
+            texto: `${p.nombre} (${p.formato}) · ${formatoCLP.format(p.precio)}`,
+            attrs: { value: p.id }
+        });
+        opcion.disabled = !p.disponible;
+        return opcion;
+    });
+    selector.replaceChildren(selector.options[0], ...opciones);
+}
+
+/* ---------- Selección de producto ---------- */
+
+function seleccionarProducto(id) {
+    const producto = estado.productos.find((p) => p.id === id);
+    if (!producto || !producto.disponible) return;
+
+    const selector = $("#cmbProducto");
+    selector.value = id;
+    selector.classList.remove("is-invalid");
+    actualizarResumen();
+    $("#pedidos").scrollIntoView({ behavior: "smooth" });
+}
+
+function actualizarResumen() {
+    const producto = estado.productos.find((p) => p.id === $("#cmbProducto").value);
+    const resumen = $("#resumenProducto");
+
+    if (!producto) {
+        resumen.classList.add("d-none");
+        return;
+    }
+    resumen.replaceChildren(
+        crear("span", { texto: `${producto.nombre} · ${producto.formato}` }),
+        crear("strong", { texto: formatoCLP.format(producto.precio) })
+    );
+    resumen.classList.remove("d-none");
+}
+
+/* ---------- Pedido ---------- */
+
+function configurarFecha() {
+    const manana = new Date();
+    manana.setDate(manana.getDate() + 1);
+    $("#txtFecha").min = manana.toISOString().split("T")[0];
+}
+
+const reglas = {
+    cmbProducto: (v) => v !== "",
+    txtNombre: (v) => v.trim().length >= 3,
+    txtCorreo: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    txtDireccion: (v) => v.trim().length >= 5,
+    txtFecha: (v) => v !== "" && v >= $("#txtFecha").min
+};
+
+function validarCampo(campo) {
+    const valido = reglas[campo.id](campo.value);
+    campo.classList.toggle("is-invalid", !valido);
+    return valido;
+}
+
+async function enviarPedido(evento) {
+    evento.preventDefault();
+    const campos = Object.keys(reglas).map((id) => document.getElementById(id));
+    const validos = campos.map(validarCampo).every(Boolean);
+
+    if (!validos) {
+        const primero = campos.find((c) => c.classList.contains("is-invalid"));
+        primero.focus({ preventScroll: true });
+        primero.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+    }
+
+    const boton = $("#btnConfirmar");
+    boton.disabled = true;
+    boton.textContent = "Enviando pedido…";
+
+    // Solo se envía el id del producto: el precio lo decide el servidor, no el navegador.
+    const pedido = {
+        productoId: $("#cmbProducto").value,
+        nombre: $("#txtNombre").value.trim(),
+        correo: $("#txtCorreo").value.trim(),
+        direccion: $("#txtDireccion").value.trim(),
+        fechaEntrega: $("#txtFecha").value
+    };
+
+    try {
+        const respuesta = await api.crearPedido(pedido);
+        mostrarComprobante(respuesta);
+        $("#formularioPedido").reset();
+        actualizarResumen();
+    } catch (error) {
+        mostrarFalloPedido(error.message);
+    } finally {
+        boton.disabled = false;
+        boton.textContent = "Confirmar pedido";
     }
 }
 
-// Validación y generación del comprobante
-function validarYProcesarPedido() {
-    const nombre = document.getElementById("txtNombre").value.trim();
-    const correo = document.getElementById("txtCorreo").value.trim();
-    const direccion = document.getElementById("txtDireccion").value.trim();
-    const productoSeleccionado = document.getElementById("cmbPack").value;
-    const fecha = document.getElementById("txtFecha").value;
+function mostrarComprobante(pedido) {
+    const producto = estado.productos.find((p) => p.id === pedido.productoId);
+    const fecha = new Date(`${pedido.fechaEntrega}T12:00:00`).toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "long" });
 
-    let esValido = true;
+    const filas = [
+        ["N° de pedido", pedido.id],
+        ["Producto", producto ? `${producto.nombre} (${producto.formato})` : pedido.productoId],
+        ["Total referencial", producto ? formatoCLP.format(producto.precio) : "Por confirmar"],
+        ["Cliente", pedido.nombre],
+        ["Correo", pedido.correo],
+        ["Despacho", pedido.direccion],
+        ["Entrega", fecha]
+    ];
 
-    // Validación Nombre
-    if (nombre.length < 3) {
-        document.getElementById("errorNombre").classList.remove("d-none");
-        esValido = false;
-    } else {
-        document.getElementById("errorNombre").classList.add("d-none");
-    }
+    const panel = $("#panelConfirmacion");
+    panel.className = "comprobante";
+    panel.replaceChildren(
+        crear("h3", { texto: "Pedido recibido" }),
+        crear("p", { clase: "texto-suave mb-0", texto: "Te enviamos el detalle y los datos de pago a tu correo." }),
+        crear("dl", {}, filas.flatMap(([titulo, valor]) => [crear("dt", { texto: titulo }), crear("dd", { texto: valor })]))
+    );
+    panel.focus({ preventScroll: true });
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
-    // Validación Correo
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexEmail.test(correo)) {
-        document.getElementById("errorCorreo").classList.remove("d-none");
-        esValido = false;
-    } else {
-        document.getElementById("errorCorreo").classList.add("d-none");
-    }
+function mostrarFalloPedido(mensaje) {
+    const panel = $("#panelConfirmacion");
+    panel.className = "comprobante";
+    panel.style.borderColor = "rgba(245, 27, 25, 0.5)";
+    panel.replaceChildren(
+        crear("h3", { texto: "No pudimos registrar el pedido", attrs: { style: "color:#FF8A80" } }),
+        crear("p", { clase: "texto-suave mb-0", texto: `${mensaje} Tus datos siguen en el formulario; intenta de nuevo.` })
+    );
+    panel.focus({ preventScroll: true });
+    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
-    // Validación Dirección
-    if (direccion.length < 5) {
-        document.getElementById("errorDireccion").classList.remove("d-none");
-        esValido = false;
-    } else {
-        document.getElementById("errorDireccion").classList.add("d-none");
-    }
+/* ---------- Eventos ---------- */
 
-    // Validación Producto
-    if (productoSeleccionado === "") {
-        document.getElementById("errorPack").classList.remove("d-none");
-        esValido = false;
-    } else {
-        document.getElementById("errorPack").classList.add("d-none");
-    }
+function registrarEventos() {
+    // Delegación: un solo listener atiende todos los botones "Agregar" y filtros generados.
+    $("#gridProductos").addEventListener("click", (evento) => {
+        const boton = evento.target.closest("[data-producto]");
+        if (boton) seleccionarProducto(boton.dataset.producto);
+    });
 
-    // Validación Fecha
-    if (fecha === "") {
-        document.getElementById("errorFecha").classList.remove("d-none");
-        esValido = false;
-    } else {
-        document.getElementById("errorFecha").classList.add("d-none");
-    }
+    $("#filtros").addEventListener("click", (evento) => {
+        const boton = evento.target.closest("[data-linea]");
+        if (!boton) return;
+        estado.filtro = boton.dataset.linea;
+        pintarFiltros();
+        pintarProductos();
+    });
 
-    //  mostramos el comprobante
-    if (esValido) {
-        document.getElementById("detCliente").innerHTML = `<strong>Cliente:</strong> ${nombre}`;
-        document.getElementById("detCorreo").innerHTML = `<strong>Correo:</strong> ${correo}`;
-        document.getElementById("detDireccion").innerHTML = `<strong>Despacho en:</strong> ${direccion}`;
-        document.getElementById("detProducto").innerHTML = `<strong>Producto Solicitado:</strong> ${productoSeleccionado}`;
-        document.getElementById("detFecha").innerHTML = `<strong>Fecha de Entrega:</strong> ${fecha}`;
+    document.querySelectorAll(".banner-promo [data-producto]").forEach((enlace) => {
+        enlace.addEventListener("click", (evento) => {
+            evento.preventDefault();
+            seleccionarProducto(enlace.dataset.producto);
+        });
+    });
 
-        const panel = document.getElementById("panelConfirmacion");
-        panel.classList.remove("d-none");
-        panel.scrollIntoView({ behavior: 'smooth' });
+    $("#cmbProducto").addEventListener("change", actualizarResumen);
+    $("#formularioPedido").addEventListener("submit", enviarPedido);
 
-        document.getElementById("formularioPedido").reset();
-    }
+    // Validación en vivo: el error desaparece apenas el campo queda correcto.
+    Object.keys(reglas).forEach((id) => {
+        document.getElementById(id).addEventListener("input", (evento) => {
+            if (evento.target.classList.contains("is-invalid")) validarCampo(evento.target);
+        });
+    });
+
+    // Cierra el menú móvil al elegir una sección.
+    document.querySelectorAll("#menuPrincipal a").forEach((enlace) => {
+        enlace.addEventListener("click", () => {
+            const menu = bootstrap.Collapse.getInstance("#menuPrincipal");
+            if (menu) menu.hide();
+        });
+    });
 }

@@ -1,0 +1,13 @@
+{
+    "status": 200,
+    "mensaje": "Productos disponibles obtenidos",
+    "productos": [
+        { "id": "PARR-01", "nombre": "Asado de tira Angus", "linea": "Parrilla Directa", "formato": "1 kg", "descripcion": "Corte con hueso y buena infiltración, ideal para cocción lenta a fuego medio.", "precio": 14990, "disponible": true },
+        { "id": "PARR-02", "nombre": "Entraña fina seleccionada", "linea": "Parrilla Directa", "formato": "1 kg", "descripcion": "Corte jugoso y de cocción rápida, limpio y listo para fuego fuerte.", "precio": 17500, "disponible": true },
+        { "id": "PARR-03", "nombre": "Lomo vetado Angus", "linea": "Parrilla Directa", "formato": "1 kg", "descripcion": "Marmoleo intenso y sabor profundo, para sellar y servir a punto.", "precio": 21990, "disponible": false },
+        { "id": "SMOK-01", "nombre": "Brisket ahumado al vacío", "linea": "Smoked & Ready", "formato": "1,5 kg", "descripcion": "12 horas en leña de roble. Se regenera en 15 minutos.", "precio": 28500, "disponible": true },
+        { "id": "SMOK-02", "nombre": "Costillar BBQ maple", "linea": "Smoked & Ready", "formato": "1,2 kg", "descripcion": "Costillar de cerdo ahumado con glaseado de maple y especias.", "precio": 19990, "disponible": true },
+        { "id": "PACK-01", "nombre": "Pack familiar parrillero", "linea": "Cajas Parrilleras", "formato": "4 personas", "descripcion": "Asado de tira, entraña, longanizas, carbón y sal de mar.", "precio": 34990, "disponible": true },
+        { "id": "PACK-02", "nombre": "Caja quincho", "linea": "Cajas Parrilleras", "formato": "8 personas", "descripcion": "Selección de cortes, longanizas artesanales, choripanes y carbón premium.", "precio": 64990, "disponible": true }
+    ]
+}

@@ -1,0 +1,24 @@
+# Entornos y dependencias
+.venv/
+venv/
+node_modules/
+__pycache__/
+*.pyc
+
+# Secretos y configuración local (nunca al repo)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Editor y sistema
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# Logs y resultados de pruebas
+*.log
+coverage/
+.pytest_cache/
