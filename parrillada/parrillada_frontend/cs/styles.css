@@ -73,22 +73,24 @@ h1, h2, h3, h4, .titulo {
 
 /* ---------- Secciones ---------- */
 .seccion {
-    padding-block: clamp(3.5rem, 8vw, 6rem);
+    padding-top: 4rem;
+    padding-bottom: 4rem;
 }
 
 .seccion-alt {
     background-color: var(--fondo-alt);
-    border-block: 1px solid var(--borde);
+    border-top: 1px solid var(--borde);
+    border-bottom: 1px solid var(--borde);
 }
 
 .encabezado-seccion {
     max-width: 640px;
-    margin: 0 auto clamp(2rem, 5vw, 3rem);
+    margin: 0 auto 2.5rem;
     text-align: center;
 }
 
 .encabezado-seccion h2 {
-    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-size: 2.2rem;
     color: var(--texto);
     margin-bottom: 0.75rem;
 }
@@ -169,7 +171,8 @@ h1, h2, h3, h4, .titulo {
     background-color: rgba(18, 20, 23, 0.92);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(161, 43, 13, 0.55);
-    padding-block: 0.75rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 
 .navbar-fuego .navbar-brand {
@@ -189,7 +192,8 @@ h1, h2, h3, h4, .titulo {
 .navbar-fuego .nav-link {
     color: var(--texto-suave);
     font-weight: 500;
-    padding-inline: 0.85rem !important;
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
     transition: color 0.2s;
 }
 
@@ -213,7 +217,8 @@ h1, h2, h3, h4, .titulo {
 
     .navbar-fuego .nav-link {
         color: var(--texto);
-        padding-block: 0.6rem !important;
+        padding-top: 0.6rem !important;
+        padding-bottom: 0.6rem !important;
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 }
@@ -221,7 +226,8 @@ h1, h2, h3, h4, .titulo {
 /* ---------- Hero ---------- */
 .hero {
     position: relative;
-    padding-block: clamp(3rem, 8vw, 6rem);
+    padding-top: 4rem;
+    padding-bottom: 4rem;
     background:
         radial-gradient(ellipse 70% 60% at 85% 40%, rgba(161, 43, 13, 0.28), transparent 70%),
         radial-gradient(ellipse 50% 50% at 10% 90%, rgba(89, 13, 7, 0.45), transparent 70%),
@@ -229,7 +235,7 @@ h1, h2, h3, h4, .titulo {
 }
 
 .hero h1 {
-    font-size: clamp(2.6rem, 6.5vw, 4.5rem);
+    font-size: 2.8rem;
     color: var(--texto);
     margin-bottom: 1.25rem;
 }
@@ -239,7 +245,7 @@ h1, h2, h3, h4, .titulo {
 .hero .lead {
     color: var(--texto-suave);
     max-width: 34rem;
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    font-size: 1.1rem;
 }
 
 .hero-acciones {
@@ -282,8 +288,7 @@ h1, h2, h3, h4, .titulo {
 
 .marco-foto img {
     width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
+    height: 260px;
     object-fit: cover;
     border-radius: var(--radio);
     background-color: var(--burdeo);
@@ -330,7 +335,7 @@ h1, h2, h3, h4, .titulo {
     place-items: center;
     border-radius: 12px;
     background-color: var(--burdeo);
-    color: var(--ambar);
+    font-size: 1.4rem;
 }
 
 .tarjeta-linea h3 {
@@ -353,7 +358,7 @@ h1, h2, h3, h4, .titulo {
 
 /* ---------- Nosotros ---------- */
 .nosotros h2 {
-    font-size: clamp(2rem, 4.5vw, 2.75rem);
+    font-size: 2.2rem;
     margin-bottom: 1.25rem;
 }
 
@@ -374,10 +379,10 @@ h1, h2, h3, h4, .titulo {
     color: var(--texto-suave);
 }
 
-.lista-garantias svg {
+.lista-garantias .check {
     flex-shrink: 0;
-    margin-top: 0.2rem;
     color: var(--ambar);
+    font-weight: 700;
 }
 
 /* ---------- Catálogo ---------- */
@@ -538,24 +543,12 @@ h1, h2, h3, h4, .titulo {
 
 .estado-catalogo.error { border-color: rgba(245, 27, 25, 0.5); }
 
-.esqueleto {
-    height: 100%;
-    min-height: 320px;
-    border-radius: var(--radio);
-    background: linear-gradient(100deg, var(--superficie) 40%, var(--superficie-2) 50%, var(--superficie) 60%);
-    background-size: 200% 100%;
-    animation: brillo 1.4s linear infinite;
-}
-
-@keyframes brillo {
-    to { background-position: -200% 0; }
-}
 
 /* ---------- Banner promoción (2do CTA) ---------- */
 .banner-promo {
     position: relative;
     overflow: hidden;
-    padding: clamp(2rem, 6vw, 3.5rem);
+    padding: 2rem;
     border-radius: calc(var(--radio) + 6px);
     background:
         radial-gradient(circle at 90% 10%, rgba(255, 171, 24, 0.25), transparent 45%),
@@ -569,7 +562,7 @@ h1, h2, h3, h4, .titulo {
 }
 
 .banner-promo h2 {
-    font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+    font-size: 2rem;
     color: var(--texto);
     margin-bottom: 0.5rem;
 }
@@ -630,7 +623,7 @@ h1, h2, h3, h4, .titulo {
 
 /* ---------- Pedido ---------- */
 .tarjeta-pedido {
-    padding: clamp(1.5rem, 5vw, 3rem);
+    padding: 1.5rem;
     border-radius: calc(var(--radio) + 6px);
     background-color: var(--burdeo);
     border: 1px solid rgba(255, 171, 24, 0.25);
@@ -638,7 +631,7 @@ h1, h2, h3, h4, .titulo {
 }
 
 .tarjeta-pedido h2 {
-    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-size: 1.9rem;
     color: var(--texto);
     text-align: center;
     margin-bottom: 0.5rem;
@@ -690,11 +683,17 @@ h1, h2, h3, h4, .titulo {
 
 .comprobante {
     margin-top: 1.5rem;
-    padding: clamp(1.25rem, 4vw, 2rem);
+    padding: 1.5rem;
     border-radius: var(--radio);
     background-color: var(--superficie);
     border: 1px solid rgba(64, 192, 87, 0.45);
 }
+
+.comprobante.error {
+    border-color: rgba(245, 27, 25, 0.5);
+}
+
+.comprobante.error h3 { color: #FF8A80; }
 
 .comprobante h3 {
     font-size: 1.5rem;
@@ -713,7 +712,8 @@ h1, h2, h3, h4, .titulo {
 
 /* ---------- Footer ---------- */
 .footer-fuego {
-    padding-block: 2.5rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
     background-color: #0C0E10;
     border-top: 1px solid rgba(161, 43, 13, 0.55);
     color: var(--texto-suave);
@@ -730,17 +730,21 @@ h1, h2, h3, h4, .titulo {
 .footer-fuego a { color: var(--texto-suave); text-decoration: none; }
 .footer-fuego a:hover { color: var(--ambar); }
 
+/* Tablet y escritorio: más aire y títulos más grandes */
+@media (min-width: 768px) {
+    .seccion, .hero { padding-top: 6rem; padding-bottom: 6rem; }
+    .hero h1 { font-size: 4rem; }
+    .encabezado-seccion h2, .nosotros h2 { font-size: 2.75rem; }
+    .banner-promo { padding: 3.5rem; }
+    .banner-promo h2 { font-size: 2.6rem; }
+    .tarjeta-pedido { padding: 3rem; }
+    .marco-foto img { height: 380px; }
+}
+
 /* Móvil: el comprobante pasa a una columna */
 @media (max-width: 575.98px) {
     .comprobante dl { grid-template-columns: 1fr; gap: 0.1rem; }
     .comprobante dd { margin-bottom: 0.6rem; }
-    .producto-pie .btn-fuego { padding-inline: 0.85rem; }
+    .producto-pie .btn-fuego { padding-left: 0.85rem; padding-right: 0.85rem; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-    }
-}

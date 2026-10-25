@@ -1,64 +1,25 @@
-/* =========================================================
-   Capa de acceso a servicios.
-   Hoy lee un JSON local (servicio simulado). En la Eval 2 basta
-   con cambiar API_BASE y las rutas para apuntar al API Gateway
-   (por ejemplo GET /api/v1/products y POST /api/v1/orders);
-   el resto de la app no cambia.
-   ========================================================= */
+// Servicio simulado del catálogo y de los pedidos.
+// En la Evaluación 2 se cambian estas URLs por las del API Gateway
+// (por ejemplo http://localhost:8000/api/v1/products).
+const URL_PRODUCTOS = "data/productos.json";
 
-const API_CONFIG = {
-    modo: "simulado",               // "simulado" | "gateway"
-    API_BASE: "",                   // ej: "http://localhost:8000/api/v1"
-    timeoutMs: 8000
-};
-
-async function pedirJSON(url, opciones = {}) {
-    const controlador = new AbortController();
-    const temporizador = setTimeout(() => controlador.abort(), API_CONFIG.timeoutMs);
-
-    try {
-        const respuesta = await fetch(url, { ...opciones, signal: controlador.signal });
-        if (!respuesta.ok) {
-            throw new Error(`El servicio respondió ${respuesta.status}`);
-        }
-        return await respuesta.json();
-    } catch (error) {
-        if (error.name === "AbortError") {
-            throw new Error("El servicio tardó demasiado en responder.");
-        }
-        if (location.protocol === "file:") {
-            throw new Error("Abre el sitio desde un servidor (XAMPP: http://localhost/...) para que el navegador permita leer los datos.");
-        }
-        throw error;
-    } finally {
-        clearTimeout(temporizador);
+// Consulta: obtiene la lista de productos desde el servicio
+async function obtenerProductos() {
+    const respuesta = await fetch(URL_PRODUCTOS);
+    if (!respuesta.ok) {
+        throw new Error("El servicio respondió con error " + respuesta.status);
     }
+    const datos = await respuesta.json();
+    return datos.productos;
 }
 
-const api = {
-    async obtenerProductos() {
-        if (API_CONFIG.modo === "gateway") {
-            return pedirJSON(`${API_CONFIG.API_BASE}/products`, { credentials: "include" });
-        }
-        const datos = await pedirJSON("data/productos.json");
-        return datos.productos;
-    },
-
-    async crearPedido(pedido) {
-        if (API_CONFIG.modo === "gateway") {
-            return pedirJSON(`${API_CONFIG.API_BASE}/orders`, {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(pedido)
-            });
-        }
-        // Simulación: el servidor real calculará el total; aquí solo se imita su respuesta.
-        await new Promise((resolver) => setTimeout(resolver, 900));
-        return {
-            id: `PED-${Date.now().toString().slice(-6)}`,
-            estado: "pendiente_pago",
-            ...pedido
-        };
-    }
-};
+// Acción simulada: "envía" el pedido y devuelve un número de pedido.
+// El navegador solo manda el id del producto; el precio lo calcula el servidor.
+function crearPedido(pedido) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const numero = "PED-" + Math.floor(Math.random() * 900000 + 100000);
+            resolve({ id: numero, estado: "pendiente_pago", ...pedido });
+        }, 900);
+    });
+}

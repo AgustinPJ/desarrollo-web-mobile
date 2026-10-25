@@ -15,18 +15,11 @@
 </head>
 <body>
 
-    <!-- Ícono de llama reutilizable -->
-    <svg width="0" height="0" class="position-absolute" aria-hidden="true">
-        <symbol id="i-llama" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2c.6 3.2-1 5.1-2.6 6.9C7.8 10.7 6 12.6 6 15.5A6 6 0 0 0 12 22a6 6 0 0 0 6-6.2c0-2.3-1-4-2.2-5.3-.3 1.5-1 2.6-2.2 3.1.6-3.9-.3-8.3-1.6-11.6Z"/></symbol>
-        <symbol id="i-check" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
-    </svg>
-
     <!-- NAVBAR: dos grupos de enlaces con el logo al centro, como en el boceto -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-fuego sticky-top" aria-label="Navegación principal">
         <div class="container">
             <a class="navbar-brand order-lg-2 mx-lg-auto" href="#inicio">
-                <svg width="26" height="26" class="marca-fuego" aria-hidden="true"><use href="#i-llama"/></svg>
-                La Tienda <span class="marca-fuego">del Fuego</span>
+                🔥 La Tienda <span class="marca-fuego">del Fuego</span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
@@ -55,7 +48,6 @@
                 <div class="row align-items-center g-4 g-lg-5">
                     <div class="col-12 col-lg-6">
                         <span class="etiqueta">
-                            <svg width="14" height="14" aria-hidden="true"><use href="#i-llama"/></svg>
                             Despacho directo a tu quincho
                         </span>
                         <h1>Cortes premium <span class="resalte">listos para asar</span></h1>
@@ -98,7 +90,7 @@
                 <div class="row g-4">
                     <div class="col-12 col-md-6 col-lg-4">
                         <article class="tarjeta-linea">
-                            <div class="icono"><svg width="24" height="24" aria-hidden="true"><use href="#i-llama"/></svg></div>
+                            <div class="icono">🔥</div>
                             <h3>Parrilla directa</h3>
                             <p>Cortes crudos envasados al vacío con sellado térmico: asado de tira, entraña y lomo angus listos para las brasas.</p>
                             <span class="formato">Formato: sellado al vacío por kg</span>
@@ -106,7 +98,7 @@
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
                         <article class="tarjeta-linea">
-                            <div class="icono"><svg width="24" height="24" aria-hidden="true"><use href="#i-llama"/></svg></div>
+                            <div class="icono">🔥</div>
                             <h3>Smoked &amp; Ready</h3>
                             <p>Cortes ahumados con leña de roble durante 12 horas. Solo se regeneran en tu parrilla en 15 minutos.</p>
                             <span class="formato">Formato: brisket y costillares BBQ</span>
@@ -114,7 +106,7 @@
                     </div>
                     <div class="col-12 col-md-12 col-lg-4">
                         <article class="tarjeta-linea">
-                            <div class="icono"><svg width="24" height="24" aria-hidden="true"><use href="#i-llama"/></svg></div>
+                            <div class="icono">🔥</div>
                             <h3>Packs y cajas</h3>
                             <p>Combos surtidos con carnes, longanizas artesanales, carbón premium y sales parrilleras.</p>
                             <span class="formato">Formato: cajas para 4, 8 o 12 personas</span>
@@ -135,9 +127,9 @@
                             Nacimos para que consigas cortes nobles y ahumados largos sin pasar 14 horas junto al fuego.
                         </p>
                         <ul class="lista-garantias">
-                            <li><svg width="20" height="20" aria-hidden="true"><use href="#i-check"/></svg>Controlamos el estándar desde el desposte hasta el envasado.</li>
-                            <li><svg width="20" height="20" aria-hidden="true"><use href="#i-check"/></svg>Cajas térmicas con gel refrigerante en todo el trayecto.</li>
-                            <li><svg width="20" height="20" aria-hidden="true"><use href="#i-check"/></svg>Entrega puntual en la fecha que eliges para tu celebración.</li>
+                            <li><span class="check">✔</span>Controlamos el estándar desde el desposte hasta el envasado.</li>
+                            <li><span class="check">✔</span>Cajas térmicas con gel refrigerante en todo el trayecto.</li>
+                            <li><span class="check">✔</span>Entrega puntual en la fecha que eliges para tu celebración.</li>
                         </ul>
                     </div>
                     <div class="col-12 col-lg-6 order-lg-1">
@@ -163,7 +155,7 @@
                 <div class="barra-filtros" id="filtros" role="group" aria-label="Filtrar por línea"></div>
 
                 <!-- 4 tarjetas por fila en escritorio, 3 en laptop, 2 en tablet, 1 en móvil -->
-                <div class="row g-4" id="gridProductos" aria-live="polite"></div>
+                <div class="row g-4" id="gridProductos"></div>
             </div>
         </section>
 
@@ -175,7 +167,7 @@
                         <h2>20% off en <span>packs familiares</span></h2>
                         <p>Pide de lunes a miércoles con el cupón <span class="cupon">ENVIOBRASA</span> y el despacho es gratis.</p>
                     </div>
-                    <a href="#pedidos" class="btn-fuego btn-lg" data-producto="PACK-01">Quiero el pack</a>
+                    <a href="#pedidos" class="btn-fuego btn-lg" id="btnPromo">Quiero el pack</a>
                 </div>
             </div>
         </section>
