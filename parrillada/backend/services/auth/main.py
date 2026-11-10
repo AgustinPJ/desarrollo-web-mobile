@@ -1,7 +1,7 @@
 """
 Auth Service (puerto 8100, red privada).
 Registro, login, introspección y logout. Guarda identidades y sesiones en auth_db.
-Basado en el auth-service del profe, con persistencia en Mongo, bcrypt y sesiones con expiración.
+Basado en el auth-service que vimos en clases, con persistencia en Mongo, bcrypt y sesiones con expiración.
 """
 import hashlib
 import os

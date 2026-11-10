@@ -25,7 +25,7 @@ Estado: aceptada · Responsable: David León · Fecha: 2026-11-09
 
 ## Justificación y medición
 
-- Un reporte diario sobre cientos de pedidos no necesita un subsistema aparte ni big data (la pauta lo indica).
+- Un reporte diario sobre cientos de pedidos no necesita un subsistema aparte ni big data.
 - gRPC aporta contratos tipados y streaming; el caso no tiene streaming y el cuello de botella no es la
   serialización JSON. Agregarlo sumaría .proto, servidor y cliente sin una necesidad medida.
 - Prueba de carga reproducible: `tests/prueba_carga.py --usuarios 20 --segundos 30` (proyección de horario punta,
