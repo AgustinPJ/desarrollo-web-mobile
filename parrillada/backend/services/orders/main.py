@@ -21,6 +21,7 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
 from pymongo import ReturnDocument
+from pymongo.errors import DuplicateKeyError
 
 SERVICIO = "orders"
 VAULT_ADDR = os.getenv("VAULT_ADDR", "http://127.0.0.1:8200")
@@ -209,6 +210,14 @@ async def crear_pedido(datos: PedidoIn, llamador: str = Depends(verificar_llamad
         doc["idempotency_key"] = idempotency_key
     try:
         await db.pedidos.insert_one(doc)
+    except DuplicateKeyError:
+        # Dos solicitudes simultáneas con la misma Idempotency-Key: la otra guardó primero
+        # (índice único). Devolvemos el stock que reservamos y respondemos con su pedido.
+        await llamar_inventory("POST", f"/reservas/{pedido_id}/liberar", x_correlation_id)
+        previo = await db.pedidos.find_one({"user_id": usuario["user_id"], "idempotency_key": idempotency_key})
+        if previo:
+            return pedido_salida(previo)
+        raise HTTPException(status_code=409, detail="Pedido duplicado")
     except Exception:
         # Si no se pudo guardar el pedido, se devuelve el stock reservado.
         await llamar_inventory("POST", f"/reservas/{pedido_id}/liberar", x_correlation_id)

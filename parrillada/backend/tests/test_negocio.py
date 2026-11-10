@@ -60,6 +60,26 @@ def test_misma_idempotency_key_no_duplica_el_pedido(api, cliente_a):
     assert r2.json()["id"] == r1.json()["id"]
 
 
+def test_misma_idempotency_key_simultanea_crea_un_solo_pedido(api, cliente_a, operador):
+    assert api.patch("/api/v1/productos/SMOK-01/stock", json={"stock": 10},
+                     headers=operador["headers"]).status_code == 200
+    cabeceras = dict(cliente_a["headers"], **{"Idempotency-Key": "pedido-simultaneo-xyz"})
+    cuerpo = {"items": [{"producto_id": "SMOK-01", "cantidad": 2}],
+              "direccion_entrega": "Av. Las Parcelas 1234", "fecha_entrega": fecha_entrega()}
+
+    def enviar(_):
+        with httpx.Client(base_url=GATEWAY, timeout=10.0) as c:
+            return c.post("/api/v1/pedidos", json=cuerpo, headers=cabeceras)
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        respuestas = list(pool.map(enviar, range(4)))
+    assert [r.status_code for r in respuestas] == [201] * 4
+    assert len({r.json()["id"] for r in respuestas}) == 1
+    # El stock se descuenta una sola vez.
+    assert api.get("/api/v1/productos/SMOK-01", headers=operador["headers"]).json()["stock"] == 8
+    api.patch("/api/v1/productos/SMOK-01/stock", json={"stock": 20}, headers=operador["headers"])
+
+
 def test_pedido_ajeno_404_sin_revelar_datos(api, cliente_a, cliente_b):
     pedido = crear_pedido(api, cliente_a).json()
     r = api.get(f"/api/v1/pedidos/{pedido['id']}", headers=cliente_b["headers"])

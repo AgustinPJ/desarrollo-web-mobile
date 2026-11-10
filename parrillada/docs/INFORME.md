@@ -564,6 +564,7 @@ P = permitido, D = denegado, — = no aplicable (verbo no publicado, responde 40
 | Cliente | S19 | `/api/v1/pagos/{id}` | GET | Permitido | Solo pago propio (404 si no) | payments |
 | Cliente | S22 | `/api/v1/graphql` `misPedidos` | POST | Permitido | Siempre filtra por su `user_id` | graphql + orders |
 | Cliente | S22 | `analitica` / campo `stock` | POST | Denegado | `Campo restringido` / `Requiere rol operador` | graphql (resolver) |
+| Operador | S13, S18 | `/api/v1/pedidos`, `/api/v1/pagos` | POST | Denegado 403 | Comprar y pagar es exclusivo del rol `cliente` | Gateway (rol) + orders (`crear_pedido`) |
 | Operador | S10–S12 | `/api/v1/productos…` | POST/PUT/PATCH | Permitido | Línea válida, código único | Gateway + inventory |
 | Operador | S17 | `/api/v1/pedidos/{id}/estado` | PATCH | Permitido | `pagado→en_despacho→entregado`, o `pendiente→anulado`; no puede marcar `pagado` | orders |
 | Operador | S07 | `/api/v1/clientes/{id}` | GET | Permitido | Ficha completa para despacho | Gateway + clients |
@@ -573,6 +574,11 @@ P = permitido, D = denegado, — = no aplicable (verbo no publicado, responde 40
 
 La matriz permite comprobar que un usuario no consulta pedidos de otro: la condición la aplica **orders** con el
 `user_id` verificado, no el frontend (prueba `test_pedido_ajeno_404_sin_revelar_datos`).
+
+**Solo el cliente compra:** decidimos que el operador administra el catálogo y el despacho, pero no crea pedidos
+ni paga con su cuenta. Por eso `POST /api/v1/pedidos` y `POST /api/v1/pagos` exigen el rol `cliente` en el
+gateway, y orders lo vuelve a comprobar en `crear_pedido` (403 si no corresponde). Si un trabajador quiere
+comprar, lo hace con una cuenta de cliente.
 
 **Anular no es borrar:** el pedido pasa a `anulado`, se agrega un evento al historial y se libera la reserva de
 stock. El registro se conserva para la trazabilidad y la contabilidad.
@@ -845,7 +851,7 @@ proveedor. El navegador no recibe ninguna clave compartida: la `clave_webhook` y
 | Contraseña protegida | registro | — | hash bcrypt, nunca en respuestas | auth | `test_contrasena_guardada_con_hash_bcrypt_y_nunca_devuelta` | PASSED |
 | Mínimo privilegio en Vault | token de un servicio lee otra ruta | servicio | 403 de Vault | Vault | `test_vault_minimo_privilegio_cada_servicio_lee_solo_lo_suyo` | PASSED |
 
-Salida completa: `docs/evidencias/pytest.txt` (44 pruebas, 44 PASSED).
+Salida completa: `docs/evidencias/pytest.txt` (45 pruebas, 45 PASSED).
 
 ---
 
@@ -971,7 +977,7 @@ aparte.
 | R1 Catálogo y filtro | P02 | S08, S09 | `test_catalogo_anonimo_200_solo_campos_publicos` | PASSED | pytest.txt; demo-flujos.txt (S08) |
 | R2 Pedido con total del servidor | P03, P04 | S13 | `test_total_lo_calcula_el_servidor`, `test_fecha_de_entrega_pasada_422` | PASSED | demo-flujos.txt (S13, `total=1` ignorado) |
 | R2 Stock sin sobreventa | P03 | S13 | `test_producto_sin_stock_409`, `test_dos_compras_simultaneas_no_venden_mas_stock_del_que_hay` (8 compras, stock 3 → 3 ventas) | PASSED | pytest.txt |
-| R2 Sin pedidos duplicados | P03 | S13 | `test_misma_idempotency_key_no_duplica_el_pedido` | PASSED | pytest.txt |
+| R2 Sin pedidos duplicados | P03 | S13 | `test_misma_idempotency_key_no_duplica_el_pedido`, `test_misma_idempotency_key_simultanea_crea_un_solo_pedido` | PASSED | pytest.txt |
 | R3 Pago seguro | P07 (brecha) | S18, S20 | `test_pago_con_monto_alterado_usa_el_total_del_servidor`, `test_webhook_aprobado_marca_pagado_y_duplicado_no_cambia_nada`, `test_webhook_con_monto_distinto_se_rechaza` | PASSED | demo-flujos.txt (S18, S20 duplicado) |
 | R3 Pago rechazado recupera stock | P07 | S20 | `test_pago_rechazado_anula_pedido_y_libera_stock` | PASSED | pytest.txt |
 | R4 Cuenta y sesión | P05 (brecha) | S01–S05 | `test_registro_no_permite_elegir_rol`, `test_login_fallido_no_revela_si_el_correo_existe`, `test_logout_revoca_la_sesion`, `test_cliente_edita_solo_su_perfil_y_no_su_correo` | PASSED | demo-flujos.txt (cierre de sesión) |
@@ -1018,8 +1024,8 @@ log con el mismo formato y distinto `user_id` (`docs/evidencias/log-gateway.txt`
 
 | Archivo | Contenido |
 | --- | --- |
-| `docs/evidencias/pytest.txt` | `pytest -v`: **44 passed** |
-| `docs/evidencias/pytest-windows.txt` | `pytest -v` en Windows con `iniciar.ps1`: **44 passed** |
+| `docs/evidencias/pytest.txt` | `pytest -v`: **45 passed** |
+| `docs/evidencias/pytest-windows.txt` | `pytest -v` en Windows con `iniciar.ps1`: **45 passed** |
 | `docs/evidencias/demo-flujos-windows.txt` | el mismo recorrido de `demo_flujos.py`, ejecutado en Windows |
 | `docs/evidencias/demo-flujos.txt` | recorrido completo de compra, controles de acceso, despacho y logout |
 | `docs/evidencias/prueba-carga.txt` | p50, p95, throughput, errores, CPU y RAM |
