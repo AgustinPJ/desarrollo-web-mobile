@@ -1,11 +1,11 @@
 # Levanta los 7 servicios del backend, cada uno en su propia ventana (como en clases).
 # Antes: Mongo corriendo, Vault en modo dev corriendo y secretos cargados (python vault/cargar_secretos.py).
-# Uso:  .\iniciar.ps1      (desde la carpeta parrillada)
+# Uso:  .\iniciar.ps1      (desde la carpeta parrillada\backend)
 
 $ErrorActionPreference = "Stop"
 $raiz = $PSScriptRoot
 
-$python = Join-Path $raiz "..\.venv\Scripts\python.exe"
+$python = Join-Path $raiz "..\..\.venv\Scripts\python.exe"
 if (-not (Test-Path $python)) { $python = "python" }
 
 $archivoTokens = Join-Path $raiz ".tokens"

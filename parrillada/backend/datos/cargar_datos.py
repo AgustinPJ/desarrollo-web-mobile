@@ -22,7 +22,7 @@ from pymongo import MongoClient
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 OPERADOR_CORREO = os.getenv("OPERADOR_CORREO", "operador@tiendadelfuego.cl")
 OPERADOR_PASSWORD = os.getenv("OPERADOR_PASSWORD")
-ARCHIVO_PRODUCTOS = Path(__file__).resolve().parent.parent / "parrillada_frontend" / "data" / "productos.json"
+ARCHIVO_PRODUCTOS = Path(__file__).resolve().parent.parent.parent / "parrillada_frontend" / "data" / "productos.json"
 
 
 def main():

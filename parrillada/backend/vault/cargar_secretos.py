@@ -4,7 +4,7 @@ Carga (o rota) todos los secretos de integración en Vault.
 - Genera un secreto distinto por cada tramo "llamador -> servicio".
 - Guarda en secret/parrillada/<servicio> SOLO lo que ese servicio necesita.
 - Crea una política por servicio que solo puede LEER su propia ruta.
-- Crea un token por servicio con esa política y lo escribe en parrillada/.tokens
+- Crea un token por servicio con esa política y lo escribe en parrillada/backend/.tokens
   (archivo local, está en .gitignore; nunca se sube al repo).
 
 Uso (con Vault en modo dev ya corriendo):

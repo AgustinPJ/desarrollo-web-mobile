@@ -4,13 +4,28 @@ Backend de la tienda parrillera "La Tienda del Fuego" (Desarrollo Web y Mobile, 
 Integrantes: Agustín Pacheco y David León. Frontend de referencia: `parrillada_frontend/` (versión Eval 1 rediseñada);
 los datos de prueba salen de ese frontend (`parrillada_frontend/data/productos.json` y su formulario de pedido).
 
-## Entrega: frontend sin integrar 
+## Estructura
 
-El profesor indicó por WhatsApp (8/11/2026) que el backend se entrega *"con datos de frontend, no con el frontend
-integrado"* y que *"basta con local"*. El 9/11 pidió enviar en el mismo zip el frontend (Evaluación 1) y el backend
-(Evaluación 2). Por eso `parrillada_frontend/` va tal como quedó en la Evaluación 1 y el backend usa sus datos
-(productos de `parrillada_frontend/data/productos.json` y los campos del formulario de pedido). Todos los flujos se
-demuestran contra el backend real por el API Gateway (`tests/demo_flujos.py`).
+```text
+parrillada/
+├── README.md
+├── parrillada_frontend/   Evaluación 1: frontend (Bootstrap 5 + JavaScript) y datos de prueba
+├── backend/               Evaluación 2: backend seguro
+│   ├── services/          gateway, auth, clients, inventory, orders, payments y graphql
+│   ├── vault/             carga y rotación de secretos (cargar_secretos.py)
+│   ├── datos/             carga de datos de prueba (cargar_datos.py)
+│   ├── tests/             pruebas de seguridad, negocio, demo de flujos y carga
+│   └── iniciar.ps1, detener.ps1, requirements.txt, .env.example
+├── docs/                  informe, diagramas y evidencias
+└── mensajeria/            PR semanal de mensajería (STOMP)
+```
+
+## Entrega: frontend sin integrar
+
+Entregamos juntos el frontend de la Evaluación 1 y el backend de la Evaluación 2. Según lo acordado para esta
+evaluación, `parrillada_frontend/` va sin integrar y el backend usa sus datos (productos de
+`parrillada_frontend/data/productos.json` y los campos del formulario de pedido). Todos los flujos los demostramos
+contra el backend real por el API Gateway (`backend/tests/demo_flujos.py`).
 
 - Informe de los 10 módulos: [`docs/INFORME.md`](docs/INFORME.md) (también en PDF: `docs/INFORME.pdf`)
 - Diagramas editables (Mermaid `.mmd` + `.svg`): `docs/diagramas/`
@@ -36,7 +51,7 @@ demuestran contra el backend real por el API Gateway (`tests/demo_flujos.py`).
   (`X-User-Id`, `X-User-Roles`).
 - Cada servicio lee de Vault solo su propia ruta (`secret/parrillada/<servicio>`) con un token de política
   de solo lectura.
-- Se ejecuta en local (el profesor confirmó que no se exige Docker).
+- Se ejecuta en local, sin Docker.
 
 ## Requisitos
 
@@ -47,12 +62,13 @@ demuestran contra el backend real por el API Gateway (`tests/demo_flujos.py`).
 
 ## Puesta en marcha
 
-Todo desde la carpeta `parrillada/` en PowerShell.
+Todo se ejecuta desde la carpeta `parrillada/backend/` en PowerShell (desde `parrillada/`: `cd backend`).
 
 1. Dependencias (una vez):
 
    ```powershell
-   ..\.venv\Scripts\Activate.ps1
+   cd backend
+   ..\..\.venv\Scripts\Activate.ps1
    pip install -r requirements.txt
    cd services\graphql; npm install; cd ..\..
    ```
@@ -63,7 +79,7 @@ Todo desde la carpeta `parrillada/` en PowerShell.
    vault server -dev -dev-root-token-id="<token-root-de-desarrollo>"
    ```
 
-3. Cargar los secretos (genera un secreto por tramo, políticas y un token por servicio en `.tokens`,
+3. Cargar los secretos (genera un secreto por tramo, políticas y un token por servicio en `backend/.tokens`,
    archivo que no se sube al repositorio). Volver a ejecutarlo rota todos los secretos:
 
    ```powershell
@@ -90,25 +106,25 @@ Todo desde la carpeta `parrillada/` en PowerShell.
 
 ## Pruebas
 
-Con todo levantado:
+Con todo levantado, desde `parrillada/backend/`:
 
 ```powershell
 $env:OPERADOR_PASSWORD = "<clave-de-prueba>"
 python -m pytest tests -v
 ```
 
-- `tests/test_seguridad.py`: anónimo 200, sin sesión 401, rol sin permiso 403, acceso directo 403,
+- `backend/tests/test_seguridad.py`: anónimo 200, sin sesión 401, rol sin permiso 403, acceso directo 403,
   cabeceras falsas, bcrypt, logout, pago con monto alterado, webhook con firma inválida, duplicado y rechazado,
   mínimo privilegio en Vault.
-- `tests/test_negocio.py`: total calculado en servidor, stock insuficiente 409, compras simultáneas,
+- `backend/tests/test_negocio.py`: total calculado en servidor, stock insuficiente 409, compras simultáneas,
   idempotencia, pedido ajeno 404, transición inválida 409, anulación que libera stock, agregaciones GraphQL,
   campos restringidos, límite de profundidad y paginación.
-- `tests/test_zz_limite_solicitudes.py`: rate limit del login (429). Deja el login bloqueado 1 minuto:
+- `backend/tests/test_zz_limite_solicitudes.py`: rate limit del login (429). Deja el login bloqueado 1 minuto:
   esperar antes de volver a correr las pruebas.
-- `tests/prueba_inventory_caido.py`: con inventory detenido, el gateway responde 503 controlado y GraphQL
+- `backend/tests/prueba_inventory_caido.py`: con inventory detenido, el gateway responde 503 controlado y GraphQL
   devuelve error parcial.
-- `tests/demo_flujos.py`: recorrido completo (compra, pago, despacho, controles de acceso y logout) mostrando cada respuesta.
-- `tests/prueba_carga.py`: p50, p95, throughput y errores (iniciar el gateway con `$env:LIMITE_POR_MINUTO="100000"`).
+- `backend/tests/demo_flujos.py`: recorrido completo (compra, pago, despacho, controles de acceso y logout) mostrando cada respuesta.
+- `backend/tests/prueba_carga.py`: p50, p95, throughput y errores (iniciar el gateway con `$env:LIMITE_POR_MINUTO="100000"`).
 
 ## Rutas del gateway
 
@@ -139,7 +155,7 @@ Cualquier otra ruta o verbo responde 404. La documentación interactiva de cada 
 
 - Comunicación en HTTP local, sin TLS: es un entorno de desarrollo en un solo equipo. En un despliegue real,
   el gateway iría detrás de HTTPS y los tramos internos con TLS.
-- Vault en modo dev (en memoria). Los secretos se recargan con `vault/cargar_secretos.py`.
+- Vault en modo dev (en memoria). Los secretos se recargan con `backend/vault/cargar_secretos.py`.
 - MongoDB local sin autenticación: la separación es una base por servicio. En producción cada servicio tendría
   su propio usuario de base de datos con permiso solo sobre su base.
 - El proveedor de pagos es un adaptador de prueba: respeta contrato, firma HMAC y estados; las pruebas lo simulan.

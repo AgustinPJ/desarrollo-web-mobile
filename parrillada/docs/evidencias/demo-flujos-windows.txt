@@ -1,0 +1,79 @@
+﻿=== Flujo de compra: catálogo -> registro -> pedido -> pago -> despacho ===
+
+[200] S08 GET /api/v1/productos?linea=Smoked & Ready (anónimo)
+      [{"id": "SMOK-01", "nombre": "Brisket ahumado al vacío", "linea": "Smoked & Ready", "formato": "1,5 kg", "descripcion": "12 horas en leña de roble. Se regenera en 15 minutos.", "precio": 28500, "disponible": true}, {"id": "SMOK-02", "nombre": "Costillar BBQ maple", "linea": "Smoked & Ready", "format ...
+
+[201] S01 POST /api/v1/auth/registro (Carlos Silva)
+      {"user_id": "6af26990c20fdec7cdf32e5f", "correo": "carlos.ba7bfd@correo.cl", "roles": ["cliente"]}
+
+[200] S02 POST /api/v1/auth/login
+      {"access_token": "<oculto>", "token_type": "bearer", "expires_in": 1800}
+
+[200] S04 GET /api/v1/clientes/me
+      {"nombre": "Carlos Silva", "correo": "carlos.ba7bfd@correo.cl", "direccion": "Av. Las Parcelas 1234"}
+
+[201] S13 POST /api/v1/pedidos (el navegador intenta mandar total=1)
+      {"id": "6af269918a00b27e7b980002", "items": [{"producto_id": "SMOK-02", "nombre": "Costillar BBQ maple", "cantidad": 2, "precio_unitario": 19990, "subtotal": 39980}], "total": 39980, "estado": "pendiente"}
+
+[201] S18 POST /api/v1/pagos (el navegador intenta mandar monto=1)
+      {"payment_id": "e1abede4-37cc-425b-b0a9-627bf3c5e724", "monto": 39980, "estado": "pendiente"}
+
+[200] S20 POST /api/v1/pagos/webhook (proveedor, firma HMAC válida)
+      {"resultado": "procesado", "estado": "aprobado", "pedido_notificado": true}
+
+[200] S20 POST /api/v1/pagos/webhook (MISMO evento repetido)
+      {"resultado": "duplicado", "estado": "aprobado"}
+
+[200] S22 POST /api/v1/graphql misPedidos (orders + inventory)
+      {"data": {"misPedidos": {"total": 1, "items": [{"id": "6af269918a00b27e7b980002", "estado": "pagado", "total": 39980, "items": [{"nombre": "Costillar BBQ maple", "cantidad": 2, "producto": {"linea": "Smoked & Ready", "disponible": true}}]}]}}}
+
+=== Controles de acceso ===
+
+[201] S01 POST /api/v1/auth/registro (Ana Rojas)
+      {"user_id": "6af26993c20fdec7cdf32e61", "correo": "ana.e57f54@correo.cl", "roles": ["cliente"]}
+
+[200] S02 POST /api/v1/auth/login
+      {"access_token": "<oculto>", "token_type": "bearer", "expires_in": 1800}
+
+[200] S15 GET /api/v1/pedidos/{id} por su DUEÑO (Carlos)
+      {"id": "6af269918a00b27e7b980002", "estado": "pagado", "total": 39980}
+
+[404] S15 GET /api/v1/pedidos/{id} por OTRA cuenta (Ana)
+      {"detail": "Pedido no encontrado"}
+
+[401] S14 GET /api/v1/pedidos sin sesión
+      {"detail": "Sesión requerida", "correlation_id": "10a34eab-c23f-4458-930c-85952b474135"}
+
+[403] S10 POST /api/v1/productos con rol cliente
+      {"detail": "No tiene permiso para esta operación", "correlation_id": "a434f0cd-f59e-47fd-ab2f-8d5dbb3d3fb9"}
+
+[200] S04 GET /api/v1/clientes/me con cabeceras X-User-* falsas (se descartan)
+      {"nombre": "Ana Rojas"}
+
+[403] Acceso DIRECTO a orders (127.0.0.1:9002) sin secreto de tramo
+      {"detail": "Solicitud no autorizada"}
+
+[404] DELETE /api/v1/pedidos/{id} (verbo no publicado)
+      {"detail": "Ruta no disponible", "correlation_id": "0e6103be-8aff-4d84-aea0-4d4ab26d9039"}
+
+=== Operador: despacho ===
+
+[200] S02 POST /api/v1/auth/login (operador)
+      {"access_token": "<oculto>", "token_type": "bearer", "expires_in": 1800}
+
+[200] S17 PATCH /api/v1/pedidos/{id}/estado -> en_despacho
+      {"estado": "en_despacho"}
+
+[200] S17 PATCH /api/v1/pedidos/{id}/estado -> entregado
+      {"estado": "entregado"}
+
+[409] S16 POST /api/v1/pedidos/{id}/anular cuando ya fue entregado
+      {"detail": "Transición no permitida: entregado -> anulado"}
+
+=== Cierre de sesión ===
+
+[200] S03 POST /api/v1/auth/logout
+      {"mensaje": "Sesión finalizada"}
+
+[401] S04 GET /api/v1/clientes/me con el token revocado
+      {"detail": "Sesión inválida o vencida", "correlation_id": "38150f25-c265-4a7b-8b14-c49bcb7659a2"}

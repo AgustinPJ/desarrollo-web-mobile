@@ -5,10 +5,10 @@ Desarrollo Web y Mobile, UNAB · Entrega: 9 de noviembre de 2026
 
 | | |
 | --- | --- |
-| Caso | Caso N.º __ · Tienda parrillera con venta en línea y despacho a domicilio ("La Tienda del Fuego") |
+| Caso | Caso N.º 20 · Tienda parrillera con venta en línea y despacho a domicilio ("La Tienda del Fuego") |
 | Integrantes | Agustín Pacheco (seguridad: API Gateway, Auth, Vault, clients, payments) · David León (inventory, orders, GraphQL Gateway, analítica) |
 | Versión del frontend | Evaluación 1 rediseñada, carpeta `parrillada/parrillada_frontend/` (Bootstrap 5 + JavaScript) |
-| Código del backend | `parrillada/services/` (7 servicios), `parrillada/vault/`, `parrillada/datos/`, `parrillada/tests/` |
+| Código del backend | `parrillada/backend/`: `services/` (7 servicios), `vault/`, `datos/`, `tests/`, `iniciar.ps1`, `detener.ps1` |
 | Cómo ejecutarlo | `parrillada/README.md` (puesta en marcha, detener, datos de prueba y pruebas) |
 
 > **Alcance de la entrega.** Entregamos juntos el frontend de la Evaluación 1 y el backend de la Evaluación 2.
@@ -31,6 +31,9 @@ Desarrollo Web y Mobile, UNAB · Entrega: 9 de noviembre de 2026
 8. [M8 · Separación privada y agregaciones GraphQL](#m8--separación-privada-y-agregaciones-graphql)
 9. [M9 · Analítica y gRPC](#m9--analítica-y-grpc)
 10. [M10 · Backend completo y verificación](#m10--backend-completo-y-verificación)
+
+En este informe, las rutas de código (`services/`, `tests/`, `vault/`, `datos/`, `iniciar.ps1`) son relativas a
+`parrillada/backend/`, y las de documentación (`docs/`) a `parrillada/`.
 
 Escribimos los diagramas en Mermaid dentro de este archivo (GitHub los dibuja) y también los dejamos como archivos
 editables `.mmd` con su versión `.svg` en `docs/diagramas/`. Las evidencias de ejecución están en `docs/evidencias/`.
@@ -1016,13 +1019,15 @@ log con el mismo formato y distinto `user_id` (`docs/evidencias/log-gateway.txt`
 | Archivo | Contenido |
 | --- | --- |
 | `docs/evidencias/pytest.txt` | `pytest -v`: **44 passed** |
+| `docs/evidencias/pytest-windows.txt` | `pytest -v` en Windows con `iniciar.ps1`: **44 passed** |
+| `docs/evidencias/demo-flujos-windows.txt` | el mismo recorrido de `demo_flujos.py`, ejecutado en Windows |
 | `docs/evidencias/demo-flujos.txt` | recorrido completo de compra, controles de acceso, despacho y logout |
 | `docs/evidencias/prueba-carga.txt` | p50, p95, throughput, errores, CPU y RAM |
 | `docs/evidencias/inventory-caido.txt` | 503 controlado y error parcial de GraphQL |
 | `docs/evidencias/log-gateway.txt` | log del gateway con `cid=` y sin tokens ni datos personales |
 
-Las evidencias corresponden a la ejecución del 9/11/2026 con los mismos servicios, versiones y scripts del repositorio;
-se pueden regenerar con los comandos del README.
+Ejecutamos las pruebas en Linux (9/11/2026) y en Windows con `iniciar.ps1` (10/11/2026), con los mismos servicios,
+versiones y scripts del repositorio; se pueden regenerar con los comandos del README.
 
 ### Limitaciones declaradas
 
