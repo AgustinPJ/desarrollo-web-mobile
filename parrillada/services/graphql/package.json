@@ -1,0 +1,20 @@
+{
+  "name": "parrillada-graphql-gateway",
+  "version": "1.0.0",
+  "description": "GraphQL Gateway privado de La Tienda del Fuego",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "apollo-server-express": "3.13.0",
+    "express": "4.21.2",
+    "graphql": "15.10.1",
+    "graphql-depth-limit": "1.1.0"
+  }
+}
