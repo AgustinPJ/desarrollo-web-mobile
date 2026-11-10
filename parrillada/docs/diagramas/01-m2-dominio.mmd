@@ -1,0 +1,96 @@
+classDiagram
+    direction LR
+    class Usuario {
+        +ObjectId id
+        +String email
+        -String password_hash
+        +List~String~ roles
+        +DateTime creado
+    }
+    class Sesion {
+        -String token_hash
+        +String user_id
+        +List~String~ roles
+        +DateTime expira
+        +bool revocada
+    }
+    class Cliente {
+        +String user_id
+        +String nombre
+        +String correo
+        +String direccion
+    }
+    class Producto {
+        +String id
+        +String nombre
+        +String linea
+        +String formato
+        +String descripcion
+        +int precio
+        -int stock
+        +bool activo
+    }
+    class Pedido {
+        +ObjectId id
+        +String user_id
+        +int total
+        +String direccion_entrega
+        +Date fecha_entrega
+        +EstadoPedido estado
+        -String idempotency_key
+        +DateTime creado
+    }
+    class DetallePedido {
+        +String producto_id
+        +String nombre
+        +int cantidad
+        +int precio_unitario
+        +int subtotal
+    }
+    class EventoEstado {
+        +EstadoPedido estado
+        +DateTime fecha
+        +String por
+        +String motivo
+    }
+    class Reserva {
+        +String pedido_id
+        +String estado
+    }
+    class ItemReserva {
+        +String producto_id
+        +int cantidad
+        +int precio_unitario
+    }
+    class Pago {
+        +String payment_id
+        +String order_id
+        +int monto
+        +EstadoPago estado
+        -bool notificado_orders
+    }
+    class EventoProveedor {
+        +String event_id
+        +String payment_id
+        +String estado
+        +DateTime recibido
+    }
+    class EstadoPedido {
+        <<enumeration>>
+        pendiente
+        pagado
+        en_despacho
+        entregado
+        anulado
+    }
+    Usuario "1" --> "0..*" Sesion : abre
+    Usuario "1" -- "1" Cliente : perfil
+    Cliente "1" --> "0..*" Pedido : realiza
+    Pedido "1" *-- "1..*" DetallePedido : contiene
+    Pedido "1" *-- "1..*" EventoEstado : historial
+    DetallePedido "0..*" --> "1" Producto : referencia
+    Pedido "1" -- "0..1" Reserva : reserva stock
+    Reserva "1" *-- "1..*" ItemReserva
+    ItemReserva "0..*" --> "1" Producto
+    Pedido "1" -- "0..1" Pago : se paga con
+    Pago "1" --> "0..*" EventoProveedor : recibe

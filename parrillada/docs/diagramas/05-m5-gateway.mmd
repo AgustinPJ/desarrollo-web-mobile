@@ -1,0 +1,81 @@
+classDiagram
+    direction TB
+    class ApiGateway {
+        +puerto = 8000
+        +entrada(request) Response
+        -buscarRuta(metodo, ruta) RouteDefinition
+        -cabecerasInternas(servicio, cid) dict
+    }
+    class RouteDefinition {
+        +verbo
+        +rutaExterna
+        +servicio
+        +rutaInterna
+        +acceso
+    }
+    class AuthenticationPolicy {
+        +introspeccion(token, cid) Identidad
+    }
+    class AuthorizationPolicy {
+        +permite(acceso, roles) bool
+    }
+    class RateLimitPolicy {
+        +limiteGeneral = 300 por min
+        +limiteLogin = 10 por min
+        +excedeLimite(ip, ruta) bool
+    }
+    class ServiceTarget {
+        +nombre
+        +urlInterna
+        +timeout = 5 s
+    }
+    class SecretProvider {
+        <<Vault>>
+        +leerSecretos(servicio) dict
+    }
+    class CorrelationLogger {
+        +registrar(cid, ip, verbo, ruta, status, ms, user)
+    }
+    class AuthService {
+        <<servicio privado>>
+        +introspect(token)
+    }
+    class GraphQLGateway {
+        <<servicio privado>>
+        +profundidadMaxima = 4
+        +limitePagina = 20
+        +verificarGateway(req)
+    }
+    class Schema {
+        +Query misPedidos
+        +Query resumenPedido
+        +Query analitica
+    }
+    class Resolver {
+        +autorizacionPorCampo()
+        +precargarProductos(ids)
+    }
+    class ServiceAdapter {
+        +llamar(servicio, ruta, contexto)
+    }
+    class ServicioInterno {
+        <<inventory, orders, clients, payments>>
+        +verificarLlamador(permitidos)
+        +reglasDeNegocio()
+    }
+    ApiGateway "1" *-- "1..*" RouteDefinition : RUTAS (22)
+    RouteDefinition "1..*" --> "1" ServiceTarget : destino
+    ApiGateway "1" *-- "1" AuthenticationPolicy
+    ApiGateway "1" *-- "1" AuthorizationPolicy
+    ApiGateway "1" *-- "1" RateLimitPolicy
+    ApiGateway "1" *-- "1" CorrelationLogger
+    ApiGateway ..> SecretProvider : obtiene salida_*
+    AuthenticationPolicy ..> AuthService : depende
+    ServiceTarget <|-- GraphQLGateway
+    ServiceTarget <|-- ServicioInterno
+    GraphQLGateway "1" *-- "1" Schema
+    Schema "1" *-- "1..*" Resolver
+    Resolver ..> ServiceAdapter : usa
+    ServiceAdapter ..> ServicioInterno : llama
+    GraphQLGateway ..> SecretProvider : obtiene salida_*
+    ServicioInterno ..> SecretProvider : obtiene entrada_*

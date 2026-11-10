@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    actor C as Cliente (navegador)
+    participant G as API Gateway
+    participant A as Auth
+    participant O as orders
+    participant I as inventory
+    participant P as payments
+    participant PR as Proveedor
+    C->>G: POST /api/v1/pedidos (Bearer, items, dirección, fecha)
+    G->>A: POST /introspect (secreto gateway→auth)
+    A-->>G: active, user_id, roles=[cliente]
+    G->>O: POST /orders + X-User-Id/Roles verificados (secreto gateway→orders)
+    O->>I: POST /reservas (secreto orders→inventory)
+    alt stock suficiente
+        I-->>O: 201 items con precio del servidor
+        O-->>G: 201 pedido pendiente, total calculado
+    else sin stock
+        I-->>O: 409
+        O-->>G: 409 (no se crea el pedido)
+    else inventory no responde (5 s)
+        O-->>G: 503 controlado
+    end
+    G-->>C: respuesta + X-Correlation-Id
+    C->>G: POST /api/v1/pagos {order_id}
+    G->>P: POST /pagos (identidad verificada)
+    P->>O: GET /orders/{id} (secreto payments→orders)
+    O-->>P: total, user_id, estado
+    P-->>C: 201 payment_id, monto del servidor, url_pago
+    PR->>G: POST /api/v1/pagos/webhook + X-Firma
+    G->>P: reenvía cuerpo y firma
+    P->>P: verifica HMAC, monto y event_id único
+    P->>O: PATCH /orders/{id}/estado pagado (solo payments puede)
+    O-->>P: 200
+    P-->>PR: 200 procesado (repetido: duplicado)

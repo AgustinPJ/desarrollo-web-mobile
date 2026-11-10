@@ -1,0 +1,36 @@
+flowchart LR
+    nav["Navegador<br/>(frontend Eval 1)"]
+    prov["Proveedor de pagos<br/>(externo, sandbox simulado)"]
+    subgraph pub["Zona pública: 0.0.0.0 en producción / 127.0.0.1:8000 en local"]
+        gw["API Gateway<br/>FastAPI :8000"]
+    end
+    subgraph priv["Red privada: solo 127.0.0.1"]
+        auth["Auth Service<br/>:8100"]
+        gql["GraphQL Gateway<br/>Node + Apollo :4000"]
+        inv["inventory :9001"]
+        ord["orders :9002"]
+        pay["payments :9003"]
+        cli["clients :9004"]
+        vault[("Vault :8200<br/>cada servicio lee solo<br/>secret/parrillada/&lt;servicio&gt;<br/>con token de solo lectura")]
+        subgraph mongo["MongoDB :27017 (una base por servicio)"]
+            adb[(auth_db)]
+            cdb[(clients_db)]
+            idb[(inventory_db)]
+            odb[(orders_db)]
+            pdb[(payments_db)]
+        end
+    end
+    nav -- "HTTPS / Bearer" --> gw
+    prov -- "webhook + X-Firma" --> gw
+    gw -- "introspect" --> auth
+    gw --> cli & inv & ord & pay & gql
+    auth -- "crear perfil" --> cli
+    ord -- "reservar / liberar" --> inv
+    pay -- "leer total / marcar pagado" --> ord
+    gql --> ord & inv & cli
+    auth --- adb
+    cli --- cdb
+    inv --- idb
+    ord --- odb
+    pay --- pdb
+    gw & auth & cli & inv & ord & pay & gql -.-> vault

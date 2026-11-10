@@ -1,0 +1,76 @@
+classDiagram
+    direction LR
+    class AuthService {
+        <<service>>
+        +registrar(RegistroIn) S01
+        +login(LoginIn) S02
+        +logout(token) S03
+    }
+    class ClientesService {
+        <<service>>
+        +miPerfil() S04
+        +actualizarMiPerfil(PerfilCambios) S05
+        +listarClientes(skip, limit) S06
+        +obtenerCliente(id) S07
+    }
+    class CatalogoService {
+        <<service>>
+        +listarProductos(linea, disponible) S08
+        +obtenerProducto(id) S09
+        +crearProducto(ProductoIn) S10
+        +actualizarProducto(id, ProductoCambios) S11
+        +fijarStock(id, stock) S12
+    }
+    class PedidosService {
+        <<service>>
+        +crearPedido(PedidoIn, idempotencyKey) S13
+        +listarPedidos(estado) S14
+        +obtenerPedido(id) S15
+        +anularPedido(id) S16
+        +cambiarEstado(id, estado) S17
+    }
+    class PagosService {
+        <<service>>
+        +iniciarPago(orderId) S18
+        +obtenerPago(id) S19
+        +recibirWebhook(evento, firma) S20
+        +reintentarAviso(id) S21
+    }
+    class AgregacionesGraphQL {
+        <<service>>
+        +misPedidos(skip, limit) S22
+        +resumenPedido(id) S22
+        +analitica(dias) S22
+    }
+    class ProductoPublicoDTO {
+        id, nombre, linea, formato
+        descripcion, precio, disponible
+    }
+    class ProductoOperadorDTO {
+        ProductoPublicoDTO + stock, activo
+    }
+    class PerfilDTO {
+        user_id, nombre, correo, direccion
+    }
+    class ClienteResumenDTO {
+        user_id, nombre, correo
+    }
+    class PedidoDTO {
+        id, items, total, direccion_entrega
+        fecha_entrega, estado, historial
+    }
+    class PagoDTO {
+        payment_id, order_id, monto, estado, url_pago
+    }
+    class TokenDTO {
+        access_token, token_type, expires_in
+    }
+    AuthService ..> TokenDTO : usa
+    ClientesService ..> PerfilDTO : usa
+    ClientesService ..> ClienteResumenDTO : usa
+    CatalogoService ..> ProductoPublicoDTO : usa
+    CatalogoService ..> ProductoOperadorDTO : usa
+    PedidosService ..> PedidoDTO : usa
+    PagosService ..> PagoDTO : usa
+    AgregacionesGraphQL ..> PedidoDTO : usa
+    AgregacionesGraphQL ..> ProductoPublicoDTO : usa

@@ -1,0 +1,13 @@
+=== Resultado prueba de carga ===
+Usuarios concurrentes : 20
+Duración              : 30.2 s
+Solicitudes           : 1675
+Throughput            : 55.5 req/s
+Latencia p50          : 337.3 ms
+Latencia p95          : 602.4 ms
+Latencia máxima       : 828.6 ms
+Errores               : 0 (0.00 %)
+
+Consumo de los 7 servicios durante la prueba (muestreo con top cada 1 s):
+CPU promedio 113 % / máximo 120 % (sobre 400 % = 4 núcleos) · RAM promedio 543 MB / máximo 544 MB
+Entorno: Linux, 4 núcleos, Mongo 7 y Vault dev locales, cliente de carga en el mismo equipo. Fecha: 2026-11-09.

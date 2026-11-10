@@ -1,0 +1,46 @@
+GET /api/v1/productos -> 503 {"detail":"Servicio no disponible","correlation_id":"f8844abb-e279-4355-b486-c97a84d42574"}
+POST /api/v1/graphql -> 200
+{
+  "errors": [
+    {
+      "message": "inventory no disponible",
+      "path": [
+        "analitica",
+        "topProductos",
+        0,
+        "producto"
+      ],
+      "extensions": {
+        "code": "SERVICIO_NO_DISPONIBLE"
+      }
+    },
+    {
+      "message": "inventory no disponible",
+      "path": [
+        "analitica",
+        "topProductos",
+        1,
+        "producto"
+      ],
+      "extensions": {
+        "code": "SERVICIO_NO_DISPONIBLE"
+      }
+    }
+  ],
+  "data": {
+    "analitica": {
+      "topProductos": [
+        {
+          "productoId": "SMOK-02",
+          "unidades": 6,
+          "producto": null
+        },
+        {
+          "productoId": "PARR-02",
+          "unidades": 2,
+          "producto": null
+        }
+      ]
+    }
+  }
+}
